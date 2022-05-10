@@ -1,27 +1,9 @@
 # react-native-screen-recorder
 
-description
+This is a work in progress
 
-## Installation
+iOS: screen recording OK, need to clean up and fix API
 
-```sh
-npm install react-native-screen-recorder
-```
+Android: next on my list
 
-## Usage
-
-```js
-import { multiply } from "react-native-screen-recorder";
-
-// ...
-
-const result = await multiply(3, 7);
-```
-
-## Contributing
-
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
-
-## License
-
-MIT
+Will write a semi-decent readme and publish to npm when done
