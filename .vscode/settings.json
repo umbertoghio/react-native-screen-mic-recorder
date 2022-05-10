@@ -1,0 +1,28 @@
+{
+  "react-native-tools": {
+    "showInternalLogs": false,
+    "logLevel": "Info"
+  },
+
+  "git.autofetch": true,
+  "git.enableSmartCommit": true,
+  "git.confirmSync": false,
+  "git.promptToSaveFilesBeforeCommit": "always",
+  "eslint.packageManager": "yarn",
+  "git.fetchOnPull": true,
+  "editor.fontLigatures": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "npm.scriptExplorerAction": "open",
+  "editor.cursorBlinking": "expand",
+  "git.allowForcePush": true,
+  "editor.tabCompletion": "on",
+  "editor.smoothScrolling": true,
+  "terminal.integrated.copyOnSelection": true,
+  "material-icon-theme.activeIconPack": "react",
+  "material-icon-theme.showReloadMessage": false,
+  "material-icon-theme.showUpdateMessage": false,
+  "material-icon-theme.folders.color": "#42a5f5",
+  "eslint.enable": false,
+  "javascript.validate.enable": false,
+  "java.configuration.updateBuildConfiguration": "disabled"
+}
