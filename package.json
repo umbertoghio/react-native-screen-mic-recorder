@@ -21,7 +21,8 @@
     "example": "yarn --cwd example",
     "pods": "cd example && pod-install --quiet",
     "bootstrap": "yarn example && yarn && yarn pods",
-    "mapAndroidPort": "adb reverse tcp:8081 tcp:8081"
+    "mapAndroidPort": "adb reverse tcp:8081 tcp:8081",
+    "startAndroidStudio": "open -a /Applications/Android\\ Studio.app"
   },
   "keywords": [
     "react-native",
