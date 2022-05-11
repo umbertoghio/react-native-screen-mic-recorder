@@ -1,7 +1,7 @@
 {
   "name": "react-native-screen-recorder",
   "version": "0.1.0",
-  "description": "description",
+  "description": "Screen recorder, useful for video overlay without processing when recording react-native-camera or expo-camera",
   "main": "src/index",
   "module": "src/index",
   "react-native": "src/index",

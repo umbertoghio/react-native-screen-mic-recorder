@@ -3,22 +3,6 @@
 
 @implementation ScreenRecorder
 
-- (NSDictionary *)errorResponse:(NSDictionary *)result;
-{
-    NSDictionary *json = [NSDictionary dictionaryWithObjectsAndKeys:
-        @"error", @"status",
-        result, @"result",nil];
-    return json;
-}
-
-- (NSDictionary *) successResponse:(NSDictionary *)result;
-{
-    NSDictionary *json = [NSDictionary dictionaryWithObjectsAndKeys:
-        @"success", @"status",
-        result, @"result",nil];
-    return json;
-}
-
 - (void) muteAudioInBuffer:(CMSampleBufferRef)sampleBuffer
 {
     CMItemCount numSamples = CMSampleBufferGetNumSamples(sampleBuffer);
@@ -43,16 +27,6 @@
         return value + 1;
     }
     return value;
-}
-
-- (unsigned long long) getVideoSize;
-{
-   // NSLog(@"getVideoSize path: %@", self.writer.outputURL.absoluteString);
-    NSURL *fileUrl = [NSURL URLWithString:self.writer.outputURL.absoluteString];
-    NSString *localPath = [fileUrl path];
-    unsigned long long fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:localPath error:nil] fileSize];
-    NSLog(@"RecordScreen Video Size: %llu", fileSize);
-    return fileSize;
 }
 
 - (NSString *) setupRecorder;
@@ -117,8 +91,8 @@ RCT_EXPORT_METHOD(setup: (NSDictionary *)config)
     self.screenWidth = [self adjustMultipleOf2:[RCTConvert int: config[@"width"]]];
     self.screenHeight = [self adjustMultipleOf2:[RCTConvert int: config[@"height"]]];
     self.enableMic = [RCTConvert BOOL: config[@"mic"]];
-    NSLog(@"RecordScreen width: %d", self.screenWidth);
-    NSLog(@"RecordScreen height: %d", self.screenHeight);
+    NSLog(@"ScreenRecorder: width: %d", self.screenWidth);
+    NSLog(@"ScreenRecorder: height: %d", self.screenHeight);
 }
 
 RCT_REMAP_METHOD(startRecording, resolve:(RCTPromiseResolveBlock)resolve rejecte:(RCTPromiseRejectBlock)reject)
@@ -134,21 +108,22 @@ RCT_REMAP_METHOD(startRecording, resolve:(RCTPromiseResolveBlock)resolve rejecte
     NSString *videoOutPath = [[pathDocuments[0] stringByAppendingPathComponent:
         [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]]]
         stringByAppendingPathExtension:@"mp4"];
-    NSLog(@"RecordScreen Video file: %@", videoOutPath);
+    NSLog(@"ScreenRecorder: Video file: %@", videoOutPath);
 
     // Initializes writer
     NSError *error;
     self.writer = [AVAssetWriter assetWriterWithURL:[NSURL fileURLWithPath:videoOutPath] fileType:AVFileTypeMPEG4 error:&error];
     if (!self.writer) {
-        NSLog(@"RecordScreen Writer init error: %@", error);
-        abort();
+        NSLog(@"ScreenRecorder: Writer init error: %@", error);
+        reject(0, @"Writer init error", nil);
+        return;
     }
     
     // Setup Audio and Video streams
     NSString *initRecorderError = [self setupRecorder];
     if (initRecorderError != nil){
-        NSLog(@"RecordScreen: Initialization error %@", initRecorderError);
-        reject(0, [NSString stringWithFormat:@"nitialization error: %@", initRecorderError], nil);
+        NSLog(@"ScreenRecorder: Initialization error %@", initRecorderError);
+        reject(0, [NSString stringWithFormat:@"Initialization error: %@", initRecorderError], nil);
         return;
     }
 
@@ -162,7 +137,7 @@ RCT_REMAP_METHOD(startRecording, resolve:(RCTPromiseResolveBlock)resolve rejecte
             }
 
             completionHandler: ^(NSError* error) {
-                NSLog(@"RecordScreen: startCapture completionHandler %@", error);
+                NSLog(@"ScreenRecorder: startCapture completionHandler %@", error);
                 if (error) {
                     reject(0, @"Permission denied", nil);
                 } else {
@@ -180,33 +155,31 @@ RCT_REMAP_METHOD(startRecording, resolve:(RCTPromiseResolveBlock)resolve rejecte
 -(void)captureSampleBuffer:(CMSampleBufferRef)sampleBuffer withBufferType:(RPSampleBufferType)bufferType
 {
     if(CMSampleBufferDataIsReady(sampleBuffer) == false || self.writer == nil) {
-        NSLog(@"RecordScreen: sample False or no assetWriter");
+        NSLog(@"ScreenRecorder: sample False or no assetWriter");
         return;
     }
 
     if (self.writer.status == AVAssetWriterStatusFailed) {
-        NSLog(@"RecordScreen: AVAssetWriterStatusFailed");
+        NSLog(@"ScreenRecorder: AVAssetWriterStatusFailed");
         return;
     }
 
     // Uses a queue in sync so that the writer-starting logic won't be invoked twice.
     dispatch_sync(dispatch_get_main_queue(), ^{
         if (!CMSampleBufferDataIsReady(sampleBuffer)) {
-            NSLog(@"RecordScreen: !CMSampleBufferDataIsReady");
+            NSLog(@"ScreenRecorder: !CMSampleBufferDataIsReady");
             return;
         }
 
         if (self.writer.status == AVAssetWriterStatusUnknown && !self.encounteredFirstBuffer && bufferType == RPSampleBufferTypeVideo) {
-            NSLog(@"RecordScreen: encounteredFirstBuffer");
+            NSLog(@"ScreenRecorder: encounteredFirstBuffer");
             self.encounteredFirstBuffer = YES;
             [self.writer startWriting];
             [self.writer startSessionAtSourceTime:CMSampleBufferGetPresentationTimeStamp(sampleBuffer)];
-            [self getVideoSize];
             return;
         }
                             
         if (self.writer.status == AVAssetWriterStatusWriting) {
-            //[self getVideoSize];
             switch (bufferType) {
                 case RPSampleBufferTypeVideo:
                     if (self.videoInput.isReadyForMoreMediaData) {
@@ -269,22 +242,20 @@ RCT_REMAP_METHOD(stopRecording, resolver:(RCTPromiseResolveBlock)resolve rejecte
                     [self.micInput markAsFinished];
                     [self.videoInput markAsFinished];
                     [self.writer finishWritingWithCompletionHandler:^{
-                        
-                    NSDictionary *result = [NSDictionary dictionaryWithObject:self.writer.outputURL.absoluteString forKey:@"outputURL"];
-                    [self getVideoSize];
-
-                    NSLog(@"RecordScreen finishWritingWithCompletionHandler: Recording stopped successfully. Cleaning up... %@", result);
-                    self.audioInput = nil;
-                    self.micInput = nil;
-                    self.videoInput = nil;
-                    self.writer = nil;
-                    self.screenRecorder = nil;
                     
-                    resolve([self successResponse:result]);
+                        resolve(self.writer.outputURL.absoluteString);
+                        NSLog(@"ScreenRecorder: Recording stopped successfully. uri: %@", self.writer.outputURL.absoluteString);
+
+                        self.audioInput = nil;
+                        self.micInput = nil;
+                        self.videoInput = nil;
+                        self.writer = nil;
+                        self.screenRecorder = nil;
+                    
                     }];
                 }
                 else {
-                    NSLog(@"RecordScreen: stopCaptureWithHandler %@", error);
+                    NSLog(@"ScreenRecorder: stopCaptureWithHandler %@", error);
                     reject(0, @"stopCaptureWithHandler", error);
                 }
             }];
@@ -294,14 +265,14 @@ RCT_REMAP_METHOD(stopRecording, resolver:(RCTPromiseResolveBlock)resolve rejecte
     });
 }
 
-RCT_EXPORT_METHOD(clean: (NSString *)fileToDelete)
+RCT_EXPORT_METHOD(deleteRecording: (NSString *)fileToDelete)
 {
     @try {
         NSURL *fileUrl = [NSURL URLWithString:fileToDelete];
-        NSLog(@"RecordScreen About to delete : %@", fileToDelete);
+        NSLog(@"ScreenRecorder: About to delete : %@", fileToDelete);
         [[NSFileManager defaultManager] removeItemAtPath:[fileUrl path] error:nil];
     } @catch(NSException *exception) {
-        NSLog(@"Errior deleting file: %@", exception);
+        NSLog(@"ScreenRecorder: Errior deleting file: %@", exception);
     }
 }
 
