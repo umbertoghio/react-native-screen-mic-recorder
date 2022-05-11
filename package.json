@@ -1,7 +1,7 @@
 {
-  "name": "react-native-screen-recorder",
+  "name": "react-native-screen-mic-recorder",
   "version": "0.1.0",
-  "description": "Screen recorder, useful for video overlay without processing when recording react-native-camera or expo-camera",
+  "description": "Screen recorder with optional mic recording, useful for video overlay without processing when recording react-native-camera or expo-camera",
   "main": "src/index",
   "module": "src/index",
   "react-native": "src/index",
@@ -12,7 +12,7 @@
     "android",
     "ios",
     "cpp",
-    "react-native-screen-recorder.podspec",
+    "react-native-screen-mic-recorder.podspec",
     "!lib/typescript/example",
     "!android/build",
     "!ios/build"
@@ -20,20 +20,21 @@
   "scripts": {
     "example": "yarn --cwd example",
     "pods": "cd example && pod-install --quiet",
-    "bootstrap": "yarn example && yarn && yarn pods"
+    "bootstrap": "yarn example && yarn && yarn pods",
+    "mapAndroidPort": "adb reverse tcp:8081 tcp:8081"
   },
   "keywords": [
     "react-native",
     "ios",
     "android"
   ],
-  "repository": "https://github.com/umbertoghio/react-native-screen-recorder",
+  "repository": "https://github.com/umbertoghio/react-native-screen-mic-recorder",
   "author": "Umberto Ghio <umberto@ghio.io> (https://github.com/umbertoghio)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/umbertoghio/react-native-screen-recorder/issues"
+    "url": "https://github.com/umbertoghio/react-native-screen-mic-recorder/issues"
   },
-  "homepage": "https://github.com/umbertoghio/react-native-screen-recorder#readme",
+  "homepage": "https://github.com/umbertoghio/react-native-screen-mic-recorder#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },

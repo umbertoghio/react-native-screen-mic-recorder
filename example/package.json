@@ -1,6 +1,6 @@
 {
-  "name": "react-native-screen-recorder-example",
-  "description": "Example app for react-native-screen-recorder",
+  "name": "react-native-screen-mic-recorder-example",
+  "description": "Example app for react-native-screen-mic-recorder",
   "version": "0.0.1",
   "private": true,
   "scripts": {

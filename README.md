@@ -1,4 +1,4 @@
-# react-native-screen-recorder
+# react-native-screen-mic-recorder
 
 This is a work in progress
 

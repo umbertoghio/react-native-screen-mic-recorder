@@ -185,7 +185,7 @@ PODS:
     - React-cxxreact (= 0.63.4)
     - React-jsi (= 0.63.4)
   - React-jsinspector (0.63.4)
-  - react-native-screen-recorder (0.1.0):
+  - react-native-screen-mic-recorder (0.1.0):
     - React-Core
   - react-native-video (5.2.0):
     - React-Core
@@ -272,7 +272,7 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
-  - react-native-screen-recorder (from `../..`)
+  - react-native-screen-mic-recorder (from `../..`)
   - react-native-video (from `../node_modules/react-native-video`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -321,7 +321,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
-  react-native-screen-recorder:
+  react-native-screen-mic-recorder:
     :path: "../.."
   react-native-video:
     :path: "../node_modules/react-native-video"
@@ -365,7 +365,7 @@ SPEC CHECKSUMS:
   React-jsi: a0418934cf48f25b485631deb27c64dc40fb4c31
   React-jsiexecutor: 93bd528844ad21dc07aab1c67cb10abae6df6949
   React-jsinspector: 58aef7155bc9a9683f5b60b35eccea8722a4f53a
-  react-native-screen-recorder: 51fe987b9019b19d91c2769619457d1f36c037c1
+  react-native-screen-mic-recorder: 1ba3302948cb9c853682a4b9d2a47374806cf311
   react-native-video: a4c2635d0802f983594b7057e1bce8f442f0ad28
   React-RCTActionSheet: 89a0ca9f4a06c1f93c26067af074ccdce0f40336
   React-RCTAnimation: 1bde3ecc0c104c55df246eda516e0deb03c4e49b
@@ -379,6 +379,6 @@ SPEC CHECKSUMS:
   ReactCommon: 73d79c7039f473b76db6ff7c6b159c478acbbb3b
   Yoga: 4bd86afe9883422a7c4028c00e34790f560923d6
 
-PODFILE CHECKSUM: 128cfa9911f332da615f9ecf7373513960e495d5
+PODFILE CHECKSUM: ee76a4a5baa6e7e2aff82bd7b7bb5efabe153d0b
 
 COCOAPODS: 1.11.2

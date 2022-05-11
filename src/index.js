@@ -3,7 +3,7 @@ import { NativeModules, Dimensions } from 'react-native'
 const { ScreenRecorder } = NativeModules
 const { stopRecording, deleteRecording } = ScreenRecorder
 
-const ReactNativeScreenRecorder = {
+const ReactNativeScreenMicRecorder = {
   startRecording: (config = {}) => {
     return ScreenRecorder.startRecording({
       mic: true,
@@ -16,4 +16,4 @@ const ReactNativeScreenRecorder = {
   deleteRecording
 }
 
-export default ReactNativeScreenRecorder
+export default ReactNativeScreenMicRecorder

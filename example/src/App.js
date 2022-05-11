@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, Text, StatusBar, TouchableHighlight, Button, Alert } from 'react-native'
 import Video from 'react-native-video'
-import ScreenRecorder from 'react-native-screen-recorder'
+import ScreenRecorder from 'react-native-screen-mic-recorder'
 import { Lorem } from './Lorem'
 import { styles } from './Styles'
 
