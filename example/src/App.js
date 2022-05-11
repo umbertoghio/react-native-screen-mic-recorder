@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, StatusBar, TouchableHighlight, Button } from 'react-native'
+import { View, Text, StatusBar, TouchableHighlight, Button, Alert } from 'react-native'
 import Video from 'react-native-video'
 import ScreenRecorder from 'react-native-screen-recorder'
 import { Lorem } from './Lorem'
@@ -9,28 +9,29 @@ export default function App () {
   const [uri, setUri] = useState('')
   const [recording, setRecording] = useState(false)
 
-  const deleteRecording = () => {
+  const handleDeleteRecording = () => {
     ScreenRecorder.deleteRecording(uri)
     setUri('')
   }
 
-  const handleOnRecording = async () => {
-    if (recording) {
-      setRecording(false)
-      const uri = await ScreenRecorder.stopRecording().catch((error) =>
-        console.warn(error)
-      )
-      console.log('uri', uri)
-      uri && setUri(uri)
-    } else {
-      uri && deleteRecording()
-      setRecording(true)
-      await ScreenRecorder.startRecording({ mic: false }).catch((error) => {
-        console.warn(error)
-        setRecording(false)
-        setUri('')
-      })
-    }
+  const handleStartRecording = async () => {
+    // Deletes previous recording if exists
+    uri && handleDeleteRecording()
+
+    const recording = await ScreenRecorder.startRecording({ mic: false }).catch((error) => {
+      console.warn(error) // handle native error
+    })
+
+    if (recording === 'started') setRecording(true)
+    if (recording === 'errorPermission') Alert.alert('Plesae grant permission in order to record screen')
+  }
+
+  const handleStopRecording = async () => {
+    setRecording(false)
+    const uri = await ScreenRecorder.stopRecording().catch((error) =>
+      console.warn(error) // handle native error
+    )
+    uri && setUri(uri)
   }
 
   return (
@@ -39,11 +40,11 @@ export default function App () {
       <View style={styles.navbar}>
         {recording
           ? <View style={styles.recordingMark}><Text style={styles.recordingMarkText}>Recording</Text></View>
-          : (uri ? <View><Button onPress={deleteRecording} title='Delete Recording' /></View> : null)}
+          : (uri ? <View><Button onPress={handleDeleteRecording} title='Delete Recording' /></View> : null)}
       </View>
       <Lorem />
       <View style={styles.btnContainer}>
-        <TouchableHighlight onPress={handleOnRecording}>
+        <TouchableHighlight onPress={recording ? handleStopRecording : handleStartRecording}>
           <View style={styles.btnWrapper}>
             <View style={recording ? styles.btnActive : styles.btnDefault} />
           </View>

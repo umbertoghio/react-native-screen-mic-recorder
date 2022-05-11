@@ -5,13 +5,12 @@ const { stopRecording, deleteRecording } = ScreenRecorder
 
 const ReactNativeScreenRecorder = {
   startRecording: (config = {}) => {
-    ScreenRecorder.setup({
+    return ScreenRecorder.startRecording({
       mic: true,
       width: Dimensions.get('window').width,
       height: Dimensions.get('window').height,
       ...config
     })
-    return ScreenRecorder.startRecording()
   },
   stopRecording,
   deleteRecording

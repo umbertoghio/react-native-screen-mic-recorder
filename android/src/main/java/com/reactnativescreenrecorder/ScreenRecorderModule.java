@@ -102,7 +102,7 @@ public class ScreenRecorderModule extends ReactContextBaseJavaModule implements 
       Log.d("ScreenRecorder","unable to delete " + filename);
     }
   }
-  
+
   // HB Recorder Events
   @Override
   public void HBRecorderOnStart() {
