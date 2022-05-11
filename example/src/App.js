@@ -23,7 +23,7 @@ export default function App () {
     })
 
     if (recording === 'started') setRecording(true)
-    if (recording === 'errorPermission') Alert.alert('Plesae grant permission in order to record screen')
+    if (recording === 'userDeniedPermission') Alert.alert('Plesae grant permission in order to record screen')
   }
 
   const handleStopRecording = async () => {

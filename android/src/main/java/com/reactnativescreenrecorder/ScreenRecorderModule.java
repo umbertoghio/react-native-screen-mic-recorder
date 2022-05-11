@@ -46,7 +46,7 @@ public class ScreenRecorderModule extends ReactContextBaseJavaModule implements 
 
         if (resultCode == Activity.RESULT_CANCELED) {
           Log.d("ScreenRecorder", "User denied permission");
-          startPromise.resolve("errorPermission");
+          startPromise.resolve("userDeniedPermission");
           return;
         }
 

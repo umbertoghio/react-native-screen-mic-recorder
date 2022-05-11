@@ -86,22 +86,21 @@
 
 RCT_EXPORT_MODULE()
 
-RCT_EXPORT_METHOD(setup: (NSDictionary *)config)
-{
-    self.screenWidth = [self adjustMultipleOf2:[RCTConvert int: config[@"width"]]];
-    self.screenHeight = [self adjustMultipleOf2:[RCTConvert int: config[@"height"]]];
-    self.enableMic = [RCTConvert BOOL: config[@"mic"]];
-    NSLog(@"ScreenRecorder: width: %d", self.screenWidth);
-    NSLog(@"ScreenRecorder: height: %d", self.screenHeight);
-}
 
-RCT_REMAP_METHOD(startRecording, resolve:(RCTPromiseResolveBlock)resolve rejecte:(RCTPromiseRejectBlock)reject)
+RCT_REMAP_METHOD(startRecording, config:(NSDictionary *)config resolve:(RCTPromiseResolveBlock)resolve rejecte:(RCTPromiseRejectBlock)reject)
 {
     // Checks if already recording screen
     self.screenRecorder = [RPScreenRecorder sharedRecorder];
     if (self.screenRecorder.isRecording) {
         return;
     }
+    
+    // Configures screen and microphone
+    self.screenWidth = [self adjustMultipleOf2:[RCTConvert int: config[@"width"]]];
+    self.screenHeight = [self adjustMultipleOf2:[RCTConvert int: config[@"height"]]];
+    self.enableMic = [RCTConvert BOOL: config[@"mic"]];
+    NSLog(@"ScreenRecorder: width: %d", self.screenWidth);
+    NSLog(@"ScreenRecorder: height: %d", self.screenHeight);
     
     // Generates video Filename using epoch
     NSArray *pathDocuments = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -139,7 +138,7 @@ RCT_REMAP_METHOD(startRecording, resolve:(RCTPromiseResolveBlock)resolve rejecte
             completionHandler: ^(NSError* error) {
                 NSLog(@"ScreenRecorder: startCapture completionHandler %@", error);
                 if (error) {
-                    reject(0, @"Permission denied", nil);
+                    resolve(@"userDeniedPermission");
                 } else {
                     resolve(@"started");
                 }
