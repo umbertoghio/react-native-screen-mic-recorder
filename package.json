@@ -1,6 +1,6 @@
 {
   "name": "react-native-screen-mic-recorder",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Screen recorder with optional mic recording, useful for video overlay without processing when recording react-native-camera or expo-camera",
   "main": "src/index",
   "module": "src/index",

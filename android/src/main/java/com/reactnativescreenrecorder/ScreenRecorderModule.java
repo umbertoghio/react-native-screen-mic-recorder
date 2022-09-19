@@ -75,6 +75,8 @@ public class ScreenRecorderModule extends ReactContextBaseJavaModule implements 
     hbRecorder.isAudioEnabled(!config.hasKey("mic") || (boolean) config.getBoolean("mic"));
     hbRecorder.setVideoEncoder("DEFAULT");
     hbRecorder.setOutputPath(outputUri.toString());
+    hbRecorder.setNotificationActionEnabled(false);
+    hbRecorder.setNotificationDescription("Stop recording from the application");
 
     try{ // Requesting user permissions
       MediaProjectionManager mediaProjectionManager = (MediaProjectionManager) reactContext.getSystemService (Context.MEDIA_PROJECTION_SERVICE);
@@ -115,7 +117,7 @@ public class ScreenRecorderModule extends ReactContextBaseJavaModule implements 
   public void HBRecorderOnComplete() {
     String uri = hbRecorder.getFilePath();
     Log.d("ScreenRecorder","HBRecorder Completed. URI: " + uri);
-    stopPromise.resolve(uri);
+    if (stopPromise != null)  stopPromise.resolve(uri);
   }
 
   @Override
