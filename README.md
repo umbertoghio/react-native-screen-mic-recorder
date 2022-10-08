@@ -59,22 +59,27 @@ const options = {
   mic: true | false // defaults to true
   width: ? // Defaults to Dimensions.get('window').width, ignored on Android
   height: ? // Defaults to Dimensions.get('window').height, ignored on Android
+  androidBannerStopRecordingHandler: fn() // Android Only: Callback function to handle stop recording from notification baner
 }
 
 
 // Start Recording
-const recording = await ScreenRecorder.startRecording({mic: false}).catch((error) => {
+const recordingStatus = await ScreenRecorder.startRecording(options).catch((error) => {
   console.warn(error) // handle native error
 })
 
-if (recording === 'started') ... // Recording has started 
-if (recording === 'userDeniedPermission') Alert.alert('Plesae grant permission in order to record screen')
+if (recordingStatus === 'started') ... // Recording has started 
+if (recordingStatus === 'userDeniedPermission') Alert.alert('Plesae grant permission in order to record screen')
 
 // Stop Recording
 const uri = await ScreenRecorder.stopRecording().catch((error) =>
   console.warn(error) // handle native error
 )
 // uri is the path to the recorded video
+
+const androidBannerStopRecordingHandler = (uri) => {
+  console.log('video uri, recording stopped from Android notification banner', uri)
+}
 ```
 ### Delete recorded video
 

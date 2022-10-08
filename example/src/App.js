@@ -14,13 +14,19 @@ export default function App () {
     setUri('')
   }
 
+  const androidBannerStopRecordingHandler = (svedUri) => {
+    setRecording(false)
+    svedUri && setUri(svedUri)
+  }
+
   const handleStartRecording = async () => {
     // Deletes previous recording if exists
     uri && handleDeleteRecording()
 
-    const recording = await ScreenRecorder.startRecording({ mic: false }).catch((error) => {
-      console.warn(error) // handle native error
-    })
+    const recording = await ScreenRecorder.startRecording({ mic: false, androidBannerStopRecordingHandler })
+      .catch((error) => {
+        console.warn(error) // handle native error
+      })
 
     if (recording === 'started') setRecording(true)
     if (recording === 'userDeniedPermission') Alert.alert('Plesae grant permission in order to record screen')
@@ -28,9 +34,10 @@ export default function App () {
 
   const handleStopRecording = async () => {
     setRecording(false)
-    const uri = await ScreenRecorder.stopRecording().catch((error) =>
-      console.warn(error) // handle native error
-    )
+    const uri = await ScreenRecorder.stopRecording()
+      .catch((error) => {
+        console.warn(error) // handle native error
+      })
     uri && setUri(uri)
   }
 

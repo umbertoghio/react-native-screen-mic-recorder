@@ -15,9 +15,13 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.BaseActivityEventListener;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.Arguments;
+
+import com.facebook.react.module.annotations.ReactModule;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import com.hbisoft.hbrecorder.HBRecorder;
 import com.hbisoft.hbrecorder.HBRecorderListener;
@@ -75,8 +79,10 @@ public class ScreenRecorderModule extends ReactContextBaseJavaModule implements 
     hbRecorder.isAudioEnabled(!config.hasKey("mic") || (boolean) config.getBoolean("mic"));
     hbRecorder.setVideoEncoder("DEFAULT");
     hbRecorder.setOutputPath(outputUri.toString());
-    hbRecorder.setNotificationActionEnabled(false);
-    hbRecorder.setNotificationDescription("Stop recording from the application");
+
+    boolean notificationActionEnabled = config.hasKey("notificationActionEnabled") && (boolean) config.getBoolean("notificationActionEnabled");
+    hbRecorder.setNotificationActionEnabled(notificationActionEnabled);
+    if (!notificationActionEnabled) hbRecorder.setNotificationDescription("Stop recording from the application");
 
     try{ // Requesting user permissions
       MediaProjectionManager mediaProjectionManager = (MediaProjectionManager) reactContext.getSystemService (Context.MEDIA_PROJECTION_SERVICE);
@@ -118,6 +124,11 @@ public class ScreenRecorderModule extends ReactContextBaseJavaModule implements 
     String uri = hbRecorder.getFilePath();
     Log.d("ScreenRecorder","HBRecorder Completed. URI: " + uri);
     if (stopPromise != null)  stopPromise.resolve(uri);
+
+    // Send event to JS
+    WritableMap params = Arguments.createMap();
+    params.putString("value", uri);
+    this.reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("stopEvent", params);
   }
 
   @Override
