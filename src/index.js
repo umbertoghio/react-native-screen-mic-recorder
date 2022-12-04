@@ -1,4 +1,4 @@
-import { NativeModules, Dimensions, NativeEventEmitter } from 'react-native'
+import { NativeModules, Dimensions, NativeEventEmitter, Platform } from 'react-native'
 
 const { ScreenRecorder } = NativeModules
 const { stopRecording, deleteRecording } = ScreenRecorder
@@ -8,7 +8,8 @@ const listeners = {}
 const ReactNativeScreenMicRecorder = {
   startRecording: (config = {}) => {
     let notificationActionEnabled = false
-    if (config?.androidBannerStopRecordingHandler && typeof config?.androidBannerStopRecordingHandler === 'function') {
+    if (
+      config?.androidBannerStopRecordingHandler && typeof config?.androidBannerStopRecordingHandler === 'function' && Platform.OS === 'android') {
       notificationActionEnabled = true
       typeof listeners?.eventListener?.remove === 'function' && listeners.eventListener.remove()
       const eventEmitter = new NativeEventEmitter(ScreenRecorder)
