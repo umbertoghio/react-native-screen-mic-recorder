@@ -1,8 +1,23 @@
-import { NativeModules, Dimensions, NativeEventEmitter, Platform } from 'react-native'
+import { NativeModules, Platform, Dimensions, NativeEventEmitter, } from 'react-native'
 
-const { ScreenRecorder } = NativeModules
-const { stopRecording, deleteRecording } = ScreenRecorder
+const LINKING_ERROR =
+  `The package 'react-native-screen-mic-recorder' doesn't seem to be linked. Make sure: \n\n` +
+  Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
+  '- You rebuilt the app after installing the package\n' +
+  '- You are not using Expo Go\n';
 
+const ScreenMicRecorder = NativeModules.ScreenMicRecorder
+  ? NativeModules.ScreenMicRecorder
+  : new Proxy(
+      {},
+      {
+        get() {
+          throw new Error(LINKING_ERROR);
+        },
+      }
+    );
+
+const { stopRecording, deleteRecording } = ScreenMicRecorder
 const listeners = {}
 
 const ReactNativeScreenMicRecorder = {
@@ -12,11 +27,11 @@ const ReactNativeScreenMicRecorder = {
       config?.androidBannerStopRecordingHandler && typeof config?.androidBannerStopRecordingHandler === 'function' && Platform.OS === 'android') {
       notificationActionEnabled = true
       typeof listeners?.eventListener?.remove === 'function' && listeners.eventListener.remove()
-      const eventEmitter = new NativeEventEmitter(ScreenRecorder)
+      const eventEmitter = new NativeEventEmitter(ScreenMicRecorder)
       listeners.eventListener = eventEmitter.addListener('stopEvent', ({ value = '' } = {}) => config.androidBannerStopRecordingHandler(value))
     }
 
-    return ScreenRecorder.startRecording({
+    return ScreenMicRecorder.startRecording({
       mic: !config.mic === false,
       notificationActionEnabled,
       width: Dimensions.get('window').width,

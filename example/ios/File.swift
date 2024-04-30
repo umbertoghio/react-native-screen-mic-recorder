@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  ScreenRecorderExample
+//  ScreenMicRecorderExample
 //
 
 import Foundation
